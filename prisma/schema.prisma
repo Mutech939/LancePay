@@ -1059,6 +1059,7 @@ model TimeEntry {
 model UserSession {
   id           String    @id @default(uuid())
   userId       String
+  providerSessionId String? @unique @db.VarChar(255)
   deviceLabel  String?   @db.VarChar(100)
   userAgent    String?   @db.VarChar(500)
   ipAddress    String?   @db.VarChar(45)
