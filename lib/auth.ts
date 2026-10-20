@@ -29,6 +29,20 @@ export async function verifyAuthToken(token: string): Promise<AuthTokenClaims | 
       select: { userId: true, revokedAt: true },
     })
     if (session.userId !== user.id || session.revokedAt) return null
+    if (!claims) return null
+
+    try {
+      const tokenHint = token.slice(-6)
+      const revoked = await prisma.userSession.findFirst({
+        where: {
+          tokenHint,
+          revokedAt: { not: null },
+        },
+      })
+      if (revoked) return null
+    } catch {
+      // Ignore if session check fails or table not mocked
+    }
 
     return claims
   } catch {
